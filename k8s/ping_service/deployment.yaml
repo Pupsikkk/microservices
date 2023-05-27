@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-deployment
+spec:
+  replicas: 1                      # кількість екземплярів Pod, що буде створено цим Deployment
+  selector:
+    matchLabels:
+      app: ping                # селектор по якому Deployment зв'язаний з Pod
+  template:
+    metadata:
+     labels:
+       app: ping               # мітка Pod по якому вона буде зв'язана з Deployment та Service
+    spec:
+      containers:
+        - image: ping_service       # образ Docker
+          imagePullPolicy: Never   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
+          name: ping           # ім'я контейнеру
+          ports:
+            - containerPort: 3000  # порт по якому можна звертатись до поди
