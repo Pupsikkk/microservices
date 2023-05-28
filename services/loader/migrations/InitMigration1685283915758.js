@@ -1,6 +1,4 @@
-import { MigrationInterface, QueryRunner } from "typeorm"
-
-export class InitMigration1685283915758 {
+module.exports.InitMigration1685283915758 = class InitMigration1685283915758 {
     async up(queryRunner){
         await queryRunner.query(
       `CREATE TABLE \`cities\` (

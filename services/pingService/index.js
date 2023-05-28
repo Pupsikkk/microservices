@@ -1,45 +1,113 @@
-const express = require('express')
-const {createConnection} = require('typeorm')
-const app = express()
-const port = 3000
+const express = require('express');
+const {createConnection, EntitySchema} = require('typeorm');
 
-const POSTGRES_DB = process.env.POSTGRES_DB
-const POSTGRES_USER = process.env.POSTGRES_USER
-const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD
+const app = express();
+app.use(express.json());
+const port = 3000;
 
-console.log({ POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD});
-console.log(process.env);
+let connection;
+
+class City {
+  constructor(id, cityName, region, country) {
+    this.id = id;
+    this.cityName = cityName;
+    this.region = region;
+    this.country = country;
+  }
+}
+
+const citySchema = new EntitySchema({
+  tableName: 'cities',
+  name: 'City',
+  target: City,
+  columns: {
+    id: {
+      primary: true,
+      type: 'int',
+      generated: true,
+    },
+    cityName: {
+      type: 'varchar',
+    },
+    region: {
+      type: 'varchar',
+    },
+    country: {
+      type: 'varchar',
+    },
+  },
+});
+
+const MYSQL_DATABASE = process.env.MYSQL_DATABASE
+const MYSQL_USER = process.env.MYSQL_USER
+const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD
 
 const DBconfig = {
-  type: 'postgres',
-  host: 'postgres',
-  port: 5432,
-  username: POSTGRES_USER,
-  password: POSTGRES_PASSWORD,
-  database: POSTGRES_DB,
-  entities: [],
+  type: 'mysql',
+  host: 'mysql',
+  port: 3306,
+  username: MYSQL_USER,
+  password: MYSQL_PASSWORD,
+  database: MYSQL_DATABASE,
+  entities: [citySchema],
   logging: true,
   synchronize: false,
   migrationsRun: false,
-  migrations: ['./migrations/*.js'],
 };
 
-console.log(DBconfig);
+
+app.get('/api/ping/cities', async (req, res) => {
+  const cityRepository = connection.getRepository(City);
+  const cities = await cityRepository.find();
+  res.json(cities);
+});
+
+app.post('/api/ping/cities', async (req, res) => {
+  const { cityName, region, country } = req.body;
+  const cityRepository = connection.getRepository(City);
+  const city = new City();
+  city.cityName = cityName;
+  city.region = region;
+  city.country = country;
+  await cityRepository.save(city);
+  res.json(city);
+});
+
+app.put('/api/ping/cities/:id', async (req, res) => {
+  console.log({ id, cityName, region, country });
+  const { id } = req.params;
+  const { cityName, region, country } = req.body;
+  const cityRepository = connection.getRepository(City);
+  const city = await cityRepository.findOne({ where: {id}});
+  if (!city) {
+    return res.status(404).json({ message: 'City not found' });
+  }
+  city.cityName = cityName;
+  city.region = region;
+  city.country = country;
+  await cityRepository.save(city);
+  res.json(city);
+});
+
+app.delete('/api/ping/cities/:id', async (req, res) => {
+  const { id } = req.params;
+  const cityRepository = connection.getRepository(City);
+  const city = await cityRepository.findOne({ where: {id}});
+  if (!city) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+  await cityRepository.remove(city);
+  res.sendStatus(204);
+});
 
 app.get('/api/ping', (req, res) => {
   res.send('Ping!')
 });
 
-(async () => {
-    try {
-        await createConnection(DBconfig);
+createConnection(DBconfig).then((conn) => {
+  connection = conn;
 
-    } catch (error) {
-        console.log('Error while connecting to the database', error);
-        // throw error;
-    }
-})()
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+  });
 });
