@@ -8,7 +8,6 @@ const POSTGRES_USER = process.env.POSTGRES_USER
 const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD
 
 console.log({ POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD});
-console.log(process.env);
 
 const DBconfig = {
   type: 'postgres',
@@ -22,13 +21,9 @@ const DBconfig = {
   synchronize: false,
   migrationsRun: false,
   migrations: ['./migrations/*.js'],
-};
+}
 
 console.log(DBconfig);
-
-app.get('/api/ping', (req, res) => {
-  res.send('Ping!')
-});
 
 (async () => {
     try {
@@ -36,10 +31,11 @@ app.get('/api/ping', (req, res) => {
 
     } catch (error) {
         console.log('Error while connecting to the database', error);
-        // throw error;
+        throw error;
     }
-})()
+})().then(() => {
+    app.listen(port, () => {
+        console.log(`All trasanctions setuped!`);
+    })
+})
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-});
