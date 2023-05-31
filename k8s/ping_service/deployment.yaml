@@ -14,17 +14,17 @@ spec:
     spec:
       initContainers:
         - name: run-migrations
-          image: loader
-          imagePullPolicy: Never 
-          # command: [ "node", "index.js" ] # CLI команда запуску міграцій, де $(POSTGRESQL_URL) і $(VERSION) змінні середовища
+          image: vladshalavinskiy/loader:v1
+          imagePullPolicy: Always 
+          command: [ "node", "index.js" ] # CLI команда запуску міграцій, де $(POSTGRESQL_URL) і $(VERSION) змінні середовища
           envFrom:
             - configMapRef:
                 name: mysql-config
             - secretRef:
                 name: mysql-secret
       containers:
-        - image: ping_service       # образ Docker
-          imagePullPolicy: Never   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
+        - image: vladshalavinskiy/ping_service:v2       # образ Docker
+          imagePullPolicy: Always   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
           name: ping           # ім'я контейнеру
           envFrom:
             - configMapRef:
