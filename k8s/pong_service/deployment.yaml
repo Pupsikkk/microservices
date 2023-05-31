@@ -13,8 +13,8 @@ spec:
        app: pong               # мітка Pod по якому вона буде зв'язана з Deployment та Service
     spec:
       containers:
-        - image: pong_service       # образ Docker
-          imagePullPolicy: Never   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
+        - image: vladshalavinskiy/pong_service        # образ Docker
+          imagePullPolicy: Always   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
           name: pong           # ім'я контейнеру
           ports:
             - containerPort: 3000  # порт по якому можна звертатись до поди
