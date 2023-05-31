@@ -13,7 +13,7 @@ spec:
        app: ping               # мітка Pod по якому вона буде зв'язана з Deployment та Service
     spec:
       containers:
-        - image: vladshalavinskiy/ping_service       # образ Docker
+        - image: vladshalavinskiy/ping_service:v1       # образ Docker
           imagePullPolicy: Always   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
           name: ping           # ім'я контейнеру
           ports:
