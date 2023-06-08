@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ping-deployment
+  name: cities-deployment
 spec:
   replicas: 1                      # кількість екземплярів Pod, що буде створено цим Deployment
   selector:
     matchLabels:
-      app: ping                # селектор по якому Deployment зв'язаний з Pod
+      app: cities                # селектор по якому Deployment зв'язаний з Pod
   template:
     metadata:
      labels:
-       app: ping               # мітка Pod по якому вона буде зв'язана з Deployment та Service
+       app: cities               # мітка Pod по якому вона буде зв'язана з Deployment та Service
     spec:
       initContainers:
         - name: run-migrations
@@ -23,9 +23,9 @@ spec:
             - secretRef:
                 name: mysql-secret
       containers:
-        - image: vladshalavinskiy/ping_service:v2       # образ Docker
+        - image: vladshalavinskiy/cities:lab2       # образ Docker
           imagePullPolicy: Always   # вказує k8s, що образ не потрібно завантажувати (варто використовувати лише для випадків, коли образи локальні)
-          name: ping           # ім'я контейнеру
+          name: cities           # ім'я контейнеру
           envFrom:
             - configMapRef:
                 name: mysql-config

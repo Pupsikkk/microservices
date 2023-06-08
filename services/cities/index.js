@@ -56,13 +56,13 @@ const DBconfig = {
 };
 
 
-app.get('/api/ping/cities', async (req, res) => {
+app.get('/api/cities', async (req, res) => {
   const cityRepository = connection.getRepository(City);
   const cities = await cityRepository.find();
   res.json(cities);
 });
 
-app.post('/api/ping/cities', async (req, res) => {
+app.post('/api/cities', async (req, res) => {
   const { cityName, region, country } = req.body;
   const cityRepository = connection.getRepository(City);
   const city = new City();
@@ -73,7 +73,7 @@ app.post('/api/ping/cities', async (req, res) => {
   res.json(city);
 });
 
-app.put('/api/ping/cities/:id', async (req, res) => {
+app.put('/api/cities/:id', async (req, res) => {
   console.log({ id, cityName, region, country });
   const { id } = req.params;
   const { cityName, region, country } = req.body;
@@ -89,7 +89,7 @@ app.put('/api/ping/cities/:id', async (req, res) => {
   res.json(city);
 });
 
-app.delete('/api/ping/cities/:id', async (req, res) => {
+app.delete('/api/cities/:id', async (req, res) => {
   const { id } = req.params;
   const cityRepository = connection.getRepository(City);
   const city = await cityRepository.findOne({ where: {id}});
@@ -98,10 +98,6 @@ app.delete('/api/ping/cities/:id', async (req, res) => {
   }
   await cityRepository.remove(city);
   res.sendStatus(204);
-});
-
-app.get('/api/ping', (req, res) => {
-  res.send('Ping!')
 });
 
 createConnection(DBconfig).then((conn) => {
