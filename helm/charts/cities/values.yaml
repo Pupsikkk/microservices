@@ -1,0 +1,30 @@
+replicaCount: 2
+
+selector:
+  app: cities
+
+configMapRef:
+  name: mysql-config
+
+secretRef:
+  name: mysql-secret
+
+image:
+  prefix: vladshalavinskiy
+  name: cities
+  tag: lab2
+  port: 3000
+
+loader:
+  image:
+    prefix: vladshalavinskiy
+    name: loader
+    tag: lab2
+
+service:
+  ports:
+    port: 3001
+    containerPort: 3000
+
+ingress:
+  path: /api/cities

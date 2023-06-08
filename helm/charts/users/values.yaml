@@ -1,7 +1,7 @@
 replicaCount: 2
 
 selector:
-  app: ping
+  app: users
 
 configMapRef:
   name: mysql-config
@@ -11,15 +11,9 @@ secretRef:
 
 image:
   prefix: vladshalavinskiy
-  name: ping_service
-  tag: v2
+  name: users
+  tag: lab2
   port: 3000
-
-loader:
-  image:
-    prefix: vladshalavinskiy
-    name: loader
-    tag: v1
 
 service:
   ports:
@@ -27,4 +21,4 @@ service:
     containerPort: 3000
 
 ingress:
-  path: /api/ping
+  path: /api/users
