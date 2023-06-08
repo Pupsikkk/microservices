@@ -14,7 +14,7 @@ spec:
     spec:
       initContainers:
         - name: run-migrations
-          image: vladshalavinskiy/loader:v1
+          image: vladshalavinskiy/loader:lab2
           imagePullPolicy: Always 
           command: [ "node", "index.js" ] # CLI команда запуску міграцій, де $(POSTGRESQL_URL) і $(VERSION) змінні середовища
           envFrom:
