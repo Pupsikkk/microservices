@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name}}
+spec:
+  replicas: {{ .Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{ .Values.selector.app }}
+  template:
+    metadata:
+     labels:
+       app: {{ .Values.selector.app }}
+    spec:
+      initContainers:
+        - name: {{ .Values.loader.image.name }}
+          image: {{ .Values.loader.image.prefix }}/{{ .Values.loader.image.name }}:{{ .Values.loader.image.tag }}
+          imagePullPolicy: Always 
+          command: [ "node", "index.js" ]
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMapRef.name }}
+            - secretRef:
+                name: {{ .Values.secretRef.name }}
+      containers:
+        - image: {{ .Values.image.prefix }}/{{ .Values.image.name }}:{{ .Values.image.tag }} 
+          imagePullPolicy: Always 
+          name: {{ .Values.selector.app }} 
+          ports:
+            - containerPort: {{ .Values.image.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.configMapRef.name }}
+            - secretRef:
+                name: {{ .Values.secretRef.name }}

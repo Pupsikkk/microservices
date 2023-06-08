@@ -1,0 +1,30 @@
+replicaCount: 2
+
+selector:
+  app: ping
+
+configMapRef:
+  name: mysql-config
+
+secretRef:
+  name: mysql-secret
+
+image:
+  prefix: vladshalavinskiy
+  name: ping_service
+  tag: v2
+  port: 3000
+
+loader:
+  image:
+    prefix: vladshalavinskiy
+    name: loader
+    tag: v1
+
+service:
+  ports:
+    port: 3001
+    containerPort: 3000
+
+ingress:
+  path: /api/ping
