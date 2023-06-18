@@ -68,14 +68,7 @@ app.get('/api/cities', async (req, res) => {
   const cities = await cityRepository.find();
 
   if (isBroken) {
-    if (Math.random()> 0.5){
-      setTimeout(() => {
-        res.json(cities);
-      }, 10000)
-    }
-    else {
-      res.json(cities);
-    }
+    setTimeout(() => {res.json(cities)}, 10000)
   } else {
     res.json(cities);
   }
