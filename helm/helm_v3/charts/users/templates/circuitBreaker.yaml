@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ .Chart.Name }}-destination
+spec:
+  host: {{ .Release.Name }}-{{ .Chart.Name }}
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: {{ .Values.circuit.consecutive5xxErrors }}
+      interval: {{ .Values.circuit.interval }}
+      baseEjectionTime: {{ .Values.circuit.baseEjectionTime }}
+      maxEjectionPercent: {{ .Values.circuit.maxEjectionPercent }}

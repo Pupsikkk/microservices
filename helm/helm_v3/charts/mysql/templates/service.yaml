@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.selector.app }}
+  labels:
+    app: {{ .Values.selector.app }}
+spec:
+  ports:
+    - port: {{ .Values.image.port }}
+  selector:
+    app: {{ .Values.selector.app }}
