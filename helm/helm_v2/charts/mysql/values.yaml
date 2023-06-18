@@ -1,0 +1,33 @@
+selector:
+  app: mysql
+
+image:
+  name: mysql
+  tag: 8.0
+  port: 3306
+
+service:
+  ports:
+    port: 3001
+    containerPort: 3000
+
+volume:
+  name: mysqldb
+  claim: my-sql-volume-claim
+  mountPath: /var/lib/mysql
+  size: "1Gi"
+
+ingress:
+  path: /api/pong
+
+configMapRef:
+  name: mysql-config
+  values:
+    MYSQL_DATABASE: demo
+
+secretRef:
+  name: mysql-secret
+  values:
+    MYSQL_USER: "dXNlcg=="
+    MYSQL_PASSWORD: "cGFzcw=="
+    MYSQL_ROOT_PASSWORD: "cm9vdFBhc3M="

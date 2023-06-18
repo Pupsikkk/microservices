@@ -1,0 +1,18 @@
+replicaCount: 1
+
+selector:
+  app: aggregator
+
+image:
+  prefix: vladshalavinskiy
+  name: aggregator
+  tag: lab4
+  port: 3000
+
+service:
+  ports:
+    port: 3001
+    containerPort: 3000
+
+ingress:
+  path: /api/aggregate
