@@ -3,7 +3,9 @@ const {createConnection, EntitySchema} = require('typeorm');
 
 const app = express();
 app.use(express.json());
+
 const port = 3000;
+let isBroken = false;
 
 let connection;
 
@@ -55,11 +57,28 @@ const DBconfig = {
   migrationsRun: false,
 };
 
+app.get('/api/cities/untested-request', async (req, res) => {
+  isBroken = !isBroken;
+
+  res.send(isBroken);
+})
 
 app.get('/api/cities', async (req, res) => {
   const cityRepository = connection.getRepository(City);
   const cities = await cityRepository.find();
-  res.json(cities);
+
+  if (isBroken) {
+    if (Math.random()> 0.5){
+      setTimeout(() => {
+        res.json(cities);
+      }, 10000)
+    }
+    else {
+      res.json(cities);
+    }
+  } else {
+    res.json(cities);
+  }
 });
 
 app.post('/api/cities', async (req, res) => {

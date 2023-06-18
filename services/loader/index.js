@@ -25,8 +25,6 @@ const DBconfig = {
     try {
         await createConnection(DBconfig);
         console.log(`All migrations setuped successfully`)
-        
-        process.exit(0);
     } catch (error) {
         console.log('Error while connecting to the database', error);
         throw error
