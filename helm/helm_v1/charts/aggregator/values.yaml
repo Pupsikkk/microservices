@@ -1,17 +1,11 @@
 replicaCount: 1
 
 selector:
-  app: cities
-
-configMapRef:
-  name: mysql-config
-
-secretRef:
-  name: mysql-secret
+  app: aggregator
 
 image:
   prefix: vladshalavinskiy
-  name: cities
+  name: aggregator
   tag: lab4
   port: 3000
 
@@ -21,4 +15,4 @@ service:
     containerPort: 3000
 
 ingress:
-  path: /api/cities
+  path: /api/aggregate
