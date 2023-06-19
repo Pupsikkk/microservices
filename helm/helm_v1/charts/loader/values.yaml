@@ -12,6 +12,6 @@ secretRef:
 image:
   prefix: vladshalavinskiy
   name: loader
-  tag: lab4
+  tag: lab5
   port: 3000
 
