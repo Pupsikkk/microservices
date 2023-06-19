@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Values.configMapRef.name }}
-data:
-  MYSQL_DATABASE: {{ .Values.configMapRef.values.MYSQL_DATABASE }}

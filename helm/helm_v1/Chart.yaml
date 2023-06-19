@@ -4,3 +4,7 @@ version: 0.0.1
 name: baseChart
 appVersion: "0.1"
 description: "baseChart"
+dependencies:
+  - name: kafka
+    version: 18.3.1
+    repository: https://charts.bitnami.com/bitnami
