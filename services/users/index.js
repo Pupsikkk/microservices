@@ -1,10 +1,16 @@
 const express = require('express')
 const {createConnection, EntitySchema} = require('typeorm');
+const { Kafka } = require('kafkajs');
 
 const app = express()
 const port = 3000
 
 app.use(express.json());
+
+const kafka = new Kafka({
+  brokers: ['kafka:9092'],
+});
+const producer = kafka.producer();
 
 let connection;
 
@@ -59,12 +65,20 @@ const DBconfig = {
 
 
 app.get('/api/users', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `USERS - [GET /api/users] ${new Date()}` }],
+  });
   const userRepository = connection.getRepository(User);
   const users = await userRepository.find();
   res.json(users);
 });
 
 app.post('/api/users', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `USERS - [POST /api/users] ${new Date()}: \n   BODY${JSON.stringify(req.body)}` }],
+  });
   const { firstName, lastName, email } = req.body;
   const userRepository = connection.getRepository(User);
   const user = new User();
@@ -76,6 +90,10 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.put('/api/users/:id', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `USERS - [PUT /api/users/:id] ${new Date()}: \n    BODY${JSON.stringify(req.body)}\n    PARAMS:${JSON.stringify(req.params)}` }],
+  });
   const { id } = req.params;
   const { firstName, lastName, email } = req.body;
   const userRepository = connection.getRepository(User);
@@ -91,6 +109,10 @@ app.put('/api/users/:id', async (req, res) => {
 });
 
 app.delete('/api/users/:id', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `USERS - [DELETE /api/users/:id] ${new Date()}: \n    PARAMS:${JSON.stringify(req.params)}` }],
+  });
   const { id } = req.params;
   const userRepository = connection.getRepository(User);
   const user = await userRepository.findOne({ where: {id}});
@@ -101,10 +123,13 @@ app.delete('/api/users/:id', async (req, res) => {
   res.sendStatus(204);
 });
 
-createConnection(DBconfig).then((conn) => {
+createConnection(DBconfig).then(async (conn) => {
   connection = conn;
+  await producer.connect();
 
-  app.listen(port, () => {
+  console.log('ALL CONNECTIONS SETUPED')
+
+  app.listen(port, async () => {
     console.log('Server is running on port 3000');
   });
 });

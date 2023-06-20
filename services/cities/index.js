@@ -1,8 +1,14 @@
 const express = require('express');
 const {createConnection, EntitySchema} = require('typeorm');
+const { Kafka } = require('kafkajs');
 
 const app = express();
 app.use(express.json());
+
+const kafka = new Kafka({
+  brokers: ['kafka:9092'],
+});
+const producer = kafka.producer();
 
 const port = 3000;
 let isBroken = false;
@@ -58,12 +64,20 @@ const DBconfig = {
 };
 
 app.get('/api/cities/untested-request', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `CITIES - [GET /api/cities/untested-request] ${new Date()}` }],
+  });
   isBroken = !isBroken;
 
   res.send(isBroken);
 })
 
 app.get('/api/cities', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `CITIES - [GET /api/cities] ${new Date()}` }],
+  });
   const cityRepository = connection.getRepository(City);
   const cities = await cityRepository.find();
 
@@ -75,6 +89,10 @@ app.get('/api/cities', async (req, res) => {
 });
 
 app.post('/api/cities', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `CITIES - [POST /api/cities] ${new Date()}: \n    BODY${JSON.stringify(req.body)}` }],
+  });
   const { cityName, region, country } = req.body;
   const cityRepository = connection.getRepository(City);
   const city = new City();
@@ -86,7 +104,10 @@ app.post('/api/cities', async (req, res) => {
 });
 
 app.put('/api/cities/:id', async (req, res) => {
-  console.log({ id, cityName, region, country });
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `CITIES - [PUT /api/cities/:id] ${new Date()}: \n    BODY${JSON.stringify(req.body)}\n    PARAMS:${JSON.stringify(req.params)}` }],
+  });
   const { id } = req.params;
   const { cityName, region, country } = req.body;
   const cityRepository = connection.getRepository(City);
@@ -102,6 +123,10 @@ app.put('/api/cities/:id', async (req, res) => {
 });
 
 app.delete('/api/cities/:id', async (req, res) => {
+  await producer.send({
+    topic: 'log',
+    messages: [{ value: `CITIES - [DELETE /api/cities/:id] ${new Date()}: \n    PARAMS:${JSON.stringify(req.params)}` }],
+  });
   const { id } = req.params;
   const cityRepository = connection.getRepository(City);
   const city = await cityRepository.findOne({ where: {id}});
@@ -115,7 +140,8 @@ app.delete('/api/cities/:id', async (req, res) => {
 createConnection(DBconfig).then((conn) => {
   connection = conn;
 
-  app.listen(3000, () => {
+  app.listen(port, async () => {
+    await producer.connect();
     console.log('Server is running on port 3000');
   });
 });
