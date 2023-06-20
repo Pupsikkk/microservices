@@ -1,20 +1,21 @@
-## How to install (Minikube):
+## How to install (cluster):
 1) Start Kubernetes with `minikube start`
 2) Enable Ingress addon (if needed) with `minikube addons enable ingress`
+2) Enable Metrics-server addon (if needed) with `minikube addons enable metrics-server`
 3) Apply helm configurations with `helm install local helm/helm_v1`
+5) Run `kubectl create namespace monitoring`
+5) Run `helm install --namespace monitoring prometheus prometheus-community/kube-prometheus-stack`
 
 You need to wait while cluster successfully starts because we have several services which depends from kafka
 
-## How to run (Minikube):
+## How to run (minikube):
 1) Start tunnel using `minikube tunnel`
 2) Access on http://localhost
-3) Run `go run test.go` in root dir to test cluster
 
-## New microservices
-1) analisator - service which receive messages from aggregator/cities/users microservices and 
-with 1 minute interval log to console simple request stats for each service (consumer)
-2) logger - service which log to console all requests to aggregator/cities/users microservices (consumer)
-
+## how get access to Grafana:
+1) Run in console `kubectl apply -f k8s/grafana.yaml`
+2) Run in console `kubectl port-forward --namespace monitoring service/prometheus-grafana 3000:80`
+3) Get access on `localhost:3000` with following credentials `login:admin password:prom-operator`
 
 ## API Requests
 
