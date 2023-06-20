@@ -1,13 +1,9 @@
 ## How to install (Minikube):
 1) Start Kubernetes with `minikube start`
 2) Enable Ingress addon (if needed) with `minikube addons enable ingress`
-3) `kubectl create namespace istio-system`
-4) `helm install istio-base istio/base -n istio-system`
-5) `helm install istiod istio/istiod -n istio-system --wait`
-6) `kubectl label namespace default istio-injection=enabled`
-7) Apply helm configurations with `helm install local helm/helm_v1`
+3) Apply helm configurations with `helm install local helm/helm_v1`
 
-You need to wait while cluster successfully starts because we have several services which depends from kafka. Also you A LOT resources to run it properly
+You need to wait while cluster successfully starts because we have several services which depends from kafka
 
 ## How to run (Minikube):
 1) Start tunnel using `minikube tunnel`
