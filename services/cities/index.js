@@ -65,6 +65,14 @@ const DBconfig = {
 
 app.get('/api/cities/untested-request', async (req, res) => {
   await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'cities'
+      })
+    }],
+  });
+  await producer.send({
     topic: 'log',
     messages: [{ value: `CITIES - [GET /api/cities/untested-request] ${new Date()}` }],
   });
@@ -74,6 +82,14 @@ app.get('/api/cities/untested-request', async (req, res) => {
 })
 
 app.get('/api/cities', async (req, res) => {
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'cities'
+      })
+    }],
+  });
   await producer.send({
     topic: 'log',
     messages: [{ value: `CITIES - [GET /api/cities] ${new Date()}` }],
@@ -90,6 +106,22 @@ app.get('/api/cities', async (req, res) => {
 
 app.post('/api/cities', async (req, res) => {
   await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'cities'
+      })
+    }],
+  });
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: {
+        microservice: 'cities'
+      }
+    }],
+  });
+  await producer.send({
     topic: 'log',
     messages: [{ value: `CITIES - [POST /api/cities] ${new Date()}: \n    BODY${JSON.stringify(req.body)}` }],
   });
@@ -104,6 +136,14 @@ app.post('/api/cities', async (req, res) => {
 });
 
 app.put('/api/cities/:id', async (req, res) => {
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'cities'
+      })
+    }],
+  });
   await producer.send({
     topic: 'log',
     messages: [{ value: `CITIES - [PUT /api/cities/:id] ${new Date()}: \n    BODY${JSON.stringify(req.body)}\n    PARAMS:${JSON.stringify(req.params)}` }],
@@ -123,6 +163,14 @@ app.put('/api/cities/:id', async (req, res) => {
 });
 
 app.delete('/api/cities/:id', async (req, res) => {
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'cities'
+      })
+    }],
+  });
   await producer.send({
     topic: 'log',
     messages: [{ value: `CITIES - [DELETE /api/cities/:id] ${new Date()}: \n    PARAMS:${JSON.stringify(req.params)}` }],

@@ -66,6 +66,14 @@ const DBconfig = {
 
 app.get('/api/users', async (req, res) => {
   await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'users'
+      })
+    }],
+  });
+  await producer.send({
     topic: 'log',
     messages: [{ value: `USERS - [GET /api/users] ${new Date()}` }],
   });
@@ -75,6 +83,14 @@ app.get('/api/users', async (req, res) => {
 });
 
 app.post('/api/users', async (req, res) => {
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'users'
+      })
+    }],
+  });
   await producer.send({
     topic: 'log',
     messages: [{ value: `USERS - [POST /api/users] ${new Date()}: \n   BODY${JSON.stringify(req.body)}` }],
@@ -90,6 +106,14 @@ app.post('/api/users', async (req, res) => {
 });
 
 app.put('/api/users/:id', async (req, res) => {
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'users'
+      })
+    }],
+  });
   await producer.send({
     topic: 'log',
     messages: [{ value: `USERS - [PUT /api/users/:id] ${new Date()}: \n    BODY${JSON.stringify(req.body)}\n    PARAMS:${JSON.stringify(req.params)}` }],
@@ -109,6 +133,14 @@ app.put('/api/users/:id', async (req, res) => {
 });
 
 app.delete('/api/users/:id', async (req, res) => {
+  await producer.send({
+    topic: 'stats',
+    messages: [{
+      value: JSON.stringify({
+        microservice: 'users'
+      })
+    }],
+  });
   await producer.send({
     topic: 'log',
     messages: [{ value: `USERS - [DELETE /api/users/:id] ${new Date()}: \n    PARAMS:${JSON.stringify(req.params)}` }],
